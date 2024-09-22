@@ -1,0 +1,112 @@
+gerenciador-tarefas/
+├── src/
+│   └── gerenciador.py
+├── data/
+│   └── tarefas.txt
+├── tests/
+│   └── test_gerenciador.py
+├── README.md
+└── requirements.txt
+class GerenciadorTarefas:
+    def __init__(self, arquivo='data/tarefas.txt'):
+        self.arquivo = arquivo
+        self.carregar_tarefas()
+
+    def carregar_tarefas(self):
+        try:
+            with open(self.arquivo, 'r') as f:
+                self.tarefas = [linha.strip() for linha in f.readlines()]
+        except FileNotFoundError:
+            self.tarefas = []
+
+    def salvar_tarefas(self):
+        with open(self.arquivo, 'w') as f:
+            for tarefa in self.tarefas:
+                f.write(tarefa + '\n')
+
+    def adicionar_tarefa(self, tarefa):
+        self.tarefas.append(tarefa)
+        self.salvar_tarefas()
+
+    def remover_tarefa(self, tarefa):
+        self.tarefas = [t for t in self.tarefas if t != tarefa]
+        self.salvar_tarefas()
+
+    def listar_tarefas(self):
+        return self.tarefas
+
+
+if __name__ == "__main__":
+    gerenciador = GerenciadorTarefas()
+
+    while True:
+        print("\nGerenciador de Tarefas")
+        print("1. Adicionar Tarefa")
+        print("2. Remover Tarefa")
+        print("3. Listar Tarefas")
+        print("4. Sair")
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            tarefa = input("Digite a tarefa: ")
+            gerenciador.adicionar_tarefa(tarefa)
+        elif escolha == "2":
+            tarefa = input("Digite a tarefa a ser removida: ")
+            gerenciador.remover_tarefa(tarefa)
+        elif escolha == "3":
+            print("Tarefas:")
+            for tarefa in gerenciador.listar_tarefas():
+                print(f"- {tarefa}")
+        elif escolha == "4":
+            break
+        else:
+            print("Opção inválida.")
+import unittest
+import os
+from src.gerenciador import GerenciadorTarefas
+
+class TestGerenciadorTarefas(unittest.TestCase):
+
+    def setUp(self):
+        self.gerenciador = GerenciadorTarefas('data/test_tarefas.txt')
+
+    def tearDown(self):
+        try:
+            os.remove('data/test_tarefas.txt')
+        except FileNotFoundError:
+            pass
+
+    def test_adicionar_tarefa(self):
+        self.gerenciador.adicionar_tarefa("Estudar Python")
+        self.assertIn("Estudar Python", self.gerenciador.listar_tarefas())
+
+    def test_remover_tarefa(self):
+        self.gerenciador.adicionar_tarefa("Estudar Python")
+        self.gerenciador.remover_tarefa("Estudar Python")
+        self.assertNotIn("Estudar Python", self.gerenciador.listar_tarefas())
+
+    def test_listar_tarefas(self):
+        self.gerenciador.adicionar_tarefa("Estudar Python")
+        tarefas = self.gerenciador.listar_tarefas()
+        self.assertIn("Estudar Python", tarefas)
+
+if __name__ == "__main__":
+    unittest.main()
+# Gerenciador de Tarefas
+
+Este é um projeto de um gerenciador de tarefas em Python, que armazena as tarefas em um arquivo de texto.
+
+## Como usar
+
+1. Clone o repositório:
+2. Navegue até a pasta do projeto:
+3. Execute o gerenciador:
+
+## Testes
+
+Para rodar os testes, use:
+
+## Licença
+
+Este projeto está licenciado sob a MIT License.
+unittest2
